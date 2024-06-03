@@ -1,0 +1,14 @@
+services:
+  db:
+    image: inferno681/pgvector:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_value:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=secret_password
+volumes:
+  db_value:

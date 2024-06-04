@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import (
     Column,
     BigInteger,
@@ -20,11 +22,11 @@ class Yappi(Base):
 
     id = Column(BigInteger, primary_key=True,
                 server_default=id_seq.next_value())
-    link = Column(String, nullable=False)
+    link = Column(String, nullable=False, unique=True)
     deskr_tags = Column(String,)
     deskr_voise = Column(String,)
     desk_image = Column(String,)
     deck_full = Column(Text,)
     desk_embedding = Column(Vector(1024))
-    create_time = Column(TIMESTAMP)
+    create_time = Column(TIMESTAMP, default=datetime.now)
     pop = Column(Integer)

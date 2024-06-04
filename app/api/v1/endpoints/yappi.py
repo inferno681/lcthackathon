@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import get_async_session
@@ -19,4 +20,7 @@ async def add_video(
     new_video = Yappi(**data.dict())
     session.merge(new_video)
     await session.commit()
-    return new_video
+    result = await session.execute(
+        select(Yappi).filter_by(link=new_video.link))
+    obj = result.scalars().first()
+    return obj

@@ -1,20 +1,19 @@
 """Initial migration
 
-Revision ID: 6c1084106327
+Revision ID: 6cee70114c26
 Revises:
-Create Date: 2024-06-04 01:53:34.304656
+Create Date: 2024-06-05 00:50:03.874366
 
 """
 
-from typing import Sequence, Union
-
-from alembic import op
 import pgvector
 import sqlalchemy as sa
+from alembic import op
+from typing import Sequence, Union
 
 
 # revision identifiers, used by Alembic.
-revision: str = "6c1084106327"
+revision: str = "6cee70114c26"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,7 +25,7 @@ def upgrade() -> None:
         CREATE EXTENSION IF NOT EXISTS vector;
     """)
     op.execute("""
-        CREATE SEQUENCE public.yappi_id_seq;
+        CREATE SEQUENCE IF NOT EXISTS public.yappi_id_seq;
     """)
     op.create_table(
         "yappi",
@@ -37,18 +36,19 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("link", sa.String(), nullable=False),
-        sa.Column("deskr_tags", sa.String(), nullable=True),
-        sa.Column("deskr_voise", sa.String(), nullable=True),
-        sa.Column("desk_image", sa.String(), nullable=True),
-        sa.Column("deck_full", sa.Text(), nullable=True),
+        sa.Column("tags_description", sa.String(), nullable=True),
+        sa.Column("voise_description", sa.String(), nullable=True),
+        sa.Column("image_description", sa.String(), nullable=True),
+        sa.Column("full_description", sa.Text(), nullable=True),
         sa.Column(
-            "desk_embedding",
+            "embedding_description",
             pgvector.sqlalchemy.Vector(dim=1024),
             nullable=True,
         ),
         sa.Column("create_time", sa.TIMESTAMP(), nullable=True),
-        sa.Column("pop", sa.Integer(), nullable=True),
+        sa.Column("popularity", sa.Integer(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("link"),
         schema="public",
     )
     # ### end Alembic commands ###

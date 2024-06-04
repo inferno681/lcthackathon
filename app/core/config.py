@@ -11,8 +11,6 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: SecretStr
     POSTGRES_DB: str
-    REGISTRATION_ROUTER: bool
-    USERS_ROUTER: bool
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8"

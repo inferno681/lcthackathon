@@ -17,10 +17,14 @@ async def add_video(
     data: YappiBase,
     session: AsyncSession = Depends(get_async_session),
 ):
-    new_video = Yappi(**data.dict())
-    session.merge(new_video)
-    await session.commit()
-    result = await session.execute(
-        select(Yappi).filter_by(link=new_video.link))
-    obj = result.scalars().first()
-    return obj
+    new_video = Yappi(**data.model_dump())
+    db_obj = await session.execute(select(Yappi).where(
+        Yappi.link == new_video.link))
+    instance = db_obj.scalars().one_or_none()
+    if instance:
+        return instance
+    else:
+        session.add(new_video)
+        await session.commit()
+        await session.refresh(new_video)
+        return new_video

@@ -28,3 +28,16 @@ async def add_video(
         await session.commit()
         await session.refresh(new_video)
         return new_video
+
+
+@router.get(
+    '/search'
+)
+async def search_video(
+    q: str = "",
+    session: AsyncSession = Depends(get_async_session),
+):
+    video = await session.execute(
+        select(Yappi).where(Yappi.tags_description.ilike(f"{q}%"))
+    )
+    return video.scalars().all()

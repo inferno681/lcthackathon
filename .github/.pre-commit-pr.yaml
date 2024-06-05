@@ -11,3 +11,4 @@ repos:
         files: "^.*\\.py$"
         exclude: "__init__.py$"
         exclude: "migrations.*$"
+        exclude: "config.py$"

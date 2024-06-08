@@ -11,17 +11,21 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=secret_password
   text_embeddings_inference:
-    image: ghcr.io/huggingface/text-embeddings-inference:turing-1.2
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]
+    image: ghcr.io/huggingface/text-embeddings-inference:89-1.2
+    restart: always
     ports:
       - "8082:80"
     volumes:
       - ./data:/data
     environment:
       - MODEL_ID=intfloat/multilingual-e5-small
+  backend:
+    image: inferno681/lcthackathon:latest
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - db
+
 volumes:
   db_value:

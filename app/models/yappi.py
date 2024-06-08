@@ -23,10 +23,11 @@ class Yappi(Base):
     id = Column(BigInteger, primary_key=True,
                 server_default=id_seq.next_value())
     link = Column(String, nullable=False, unique=True)
+    face = Column(String, unique=True)
     tags_description = Column(String,)
     voise_description = Column(String,)
     image_description = Column(String,)
     full_description = Column(Text,)
-    embedding_description = Column(Vector(1024))
+    embedding_description = Column(Vector(384))
     create_time = Column(TIMESTAMP, default=datetime.now)
     popularity = Column(Integer)

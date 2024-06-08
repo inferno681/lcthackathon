@@ -1,19 +1,20 @@
 """Initial migration
 
-Revision ID: 6cee70114c26
+Revision ID: 16cba2ab357d
 Revises:
-Create Date: 2024-06-05 00:50:03.874366
+Create Date: 2024-06-08 00:57:11.143621
 
 """
 
+from typing import Sequence, Union
+
+from alembic import op
 import pgvector
 import sqlalchemy as sa
-from alembic import op
-from typing import Sequence, Union
 
 
 # revision identifiers, used by Alembic.
-revision: str = "6cee70114c26"
+revision: str = "16cba2ab357d"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -36,18 +37,20 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("link", sa.String(), nullable=False),
+        sa.Column("face", sa.String(), nullable=True),
         sa.Column("tags_description", sa.String(), nullable=True),
         sa.Column("voise_description", sa.String(), nullable=True),
         sa.Column("image_description", sa.String(), nullable=True),
         sa.Column("full_description", sa.Text(), nullable=True),
         sa.Column(
             "embedding_description",
-            pgvector.sqlalchemy.Vector(dim=1024),
+            pgvector.sqlalchemy.Vector(dim=384),
             nullable=True,
         ),
         sa.Column("create_time", sa.TIMESTAMP(), nullable=True),
         sa.Column("popularity", sa.Integer(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("face"),
         sa.UniqueConstraint("link"),
         schema="public",
     )

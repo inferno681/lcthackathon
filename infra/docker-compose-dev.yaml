@@ -11,7 +11,12 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=secret_password
   text_embeddings_inference:
-    image: ghcr.io/huggingface/text-embeddings-inference:89-1.2
+    image: ghcr.io/huggingface/text-embeddings-inference:turing-1.2
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
     ports:
       - "8082:80"
     volumes:

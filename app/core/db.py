@@ -7,7 +7,11 @@ from app.core import config
 
 Base = declarative_base()
 
-engine = create_async_engine(config.DATABASE_URL)
+engine = create_async_engine(
+    config.DATABASE_URL,
+    pool_timeout=config.POOL_TIMEOUT,
+    pool_size=config.POOL_SIZE
+)
 
 AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession)
 

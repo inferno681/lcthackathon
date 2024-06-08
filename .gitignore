@@ -166,3 +166,5 @@ cython_debug/
 /discussion.md
 /dataset/
 /infra/data/
+yappy_hackaton_2024_400k.csv
+/temp/

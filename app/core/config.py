@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: SecretStr
     POSTGRES_DB: str
+    POOL_TIMEOUT: int
+    POOL_SIZE: int
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8"

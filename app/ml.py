@@ -5,6 +5,7 @@ from ffmpeg.asyncio import FFmpeg
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from uuid import uuid4
 from ollama import Client
+from ollama import AsyncClient
 from ollama._types import Options
 
 PATH_TO_FILES = './temp/'

@@ -10,6 +10,11 @@ PATH_TO_FILES = './temp/'
 
 embeddings = HuggingFaceEndpointEmbeddings(model='http://127.0.0.1:8082')
 
+# Создаем объект подключения к серверу ollama, на котором поднята Llava
+# ollama = AsyncClient(host='http://127.0.0.1:8083')   # Для ассинхронных вызовов
+ollama = Client(host='http://127.0.0.1:8083')
+# Устанавливаем температуру 0.1 для запросов к модели Llava
+options = Options(temperature=0.1, max_tokens=120)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
@@ -98,6 +103,12 @@ def audio_transcribe(link):
 
     return res
 
+def image_recignition(image_path):
+    res = ollama.generate(model='llava-llama3-int4',
+                          prompt='What is this a picture of shortly? Аnswer me briefly 3 main items.',
+                          images=[image_path],
+                          options=options)
+    return res['response']
 
 async def convert_text_to_embeddings(text):
     return embeddings.embed_query(text)

@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+import os
+
+from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy import select, or_, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -16,6 +18,10 @@ from app.ml import convert_text_to_embeddings, add_video as add
 
 REDIS_SETTINGS = RedisSettings()
 router = APIRouter()
+
+UPLOAD_DIRECTORY = "./media"
+if not os.path.exists(UPLOAD_DIRECTORY):
+    os.makedirs(UPLOAD_DIRECTORY)
 
 
 @router.post(
@@ -126,3 +132,14 @@ async def search_video(
     ).limit(5))
 
     return [YappiBase.model_validate(video) for video in result]
+
+
+@router.post("/upload-image/")
+async def upload_image(file: UploadFile = File(...)):
+    try:
+        file_location = os.path.join(UPLOAD_DIRECTORY, file.filename)
+        with open(file_location, "wb") as f:
+            f.write(file.file.read())
+        return {"result": "Uploaded"}
+    except Exception as e:
+        return {"error": str(e)}

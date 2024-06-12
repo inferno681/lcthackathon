@@ -6,6 +6,7 @@ from uuid import uuid4
 from ollama import AsyncClient
 from ollama._types import Options
 
+
 from .services import config, convert_text_to_embeddings
 PATH_TO_FILES = './temp/'
 

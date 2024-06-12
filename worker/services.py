@@ -1,5 +1,5 @@
 import re
-
+import aiohttp
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 
 from .config import config
@@ -28,3 +28,15 @@ async def check_and_add_tags(session, tag_list):
 
 async def convert_text_to_embeddings(text):
     return embeddings.embed_query(text)
+
+
+async def send_file_to_fastapi(file_path, url):
+    async with aiohttp.ClientSession() as session:
+        with open(file_path, 'rb') as file:
+            form_data = aiohttp.FormData()
+            form_data.add_field('file', file, filename=file_path)
+            async with session.post(url, data=form_data) as response:
+                if response.status == 200:
+                    print("Файл успешно отправлен!")
+                else:
+                    print(f"Ошибка {response.status} при отправке файла.")

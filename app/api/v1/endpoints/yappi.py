@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from arq import create_pool
 from arq.connections import RedisSettings
-from app.core import get_async_session
+from app.core import check_and_add_tags, get_async_session, parse_tags
 from app.models import Yappi
 from app.schemas import YappiBase
 from app.ml import convert_text_to_embeddings, add_video as add
@@ -28,7 +28,10 @@ async def add_video(
         return instance
     else:
         res = await add(new_video.link)
+        tags = await check_and_add_tags(
+            session, parse_tags(new_video.tags_description))
         new_video.__dict__.update(res)
+        new_video.tags = tags
         session.add(new_video)
         await session.commit()
         await session.refresh(new_video)

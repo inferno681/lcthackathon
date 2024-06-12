@@ -1,2 +1,2 @@
 # flake8: noqa
-from .yappi import Yappi
+from .yappi import Tag, Yappi

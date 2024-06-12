@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     POOL_TIMEOUT: int
     POOL_SIZE: int
+    EMBEDDINGS_SERVER: str
+    OLLAMA_SERVER: str
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8"

@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from arq import create_pool
 from arq.connections import RedisSettings
 from app.core import check_and_add_tags, get_async_session, parse_tags
-from app.models import Yappi
+from app.models import Tag, Yappi
 from app.schemas import YappiBase
 from app.ml import convert_text_to_embeddings, add_video as add
 
@@ -59,16 +60,25 @@ async def add_video_arq(
 
 
 @router.get(
-    '/search_usual',
+    '/search_tags',
     response_model=list[YappiBase]
 )
-async def search_usual(
+async def search_tags(
     q: str = "",
     session: AsyncSession = Depends(get_async_session),
 ):
-    result = await session.execute(
-        select(Yappi).where(Yappi.tags_description.ilike(f"{q}%"))
-    )
+    if not q:
+        return None
+    else:
+        tags = parse_tags(q)
+        filters = [Tag.name.ilike(f"{tag}%") for tag in tags]
+        query = select(Yappi).join(Yappi.tags)
+        query = query.where(or_(*filters))
+        result = await session.execute(query.options(selectinload(Yappi.tags)))
+        result = await session.execute(
+            select(Yappi).join(Yappi.tags).where(
+                Tag.name.ilike(f"{q}%")).options(selectinload(Yappi.tags))
+        )
     videos = result.scalars().all()
     return [YappiBase.model_validate(video) for video in videos]
 

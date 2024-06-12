@@ -2,7 +2,7 @@ import re
 
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 
-from app.core import config
+from .config import config
 from app.models import Tag
 
 embeddings = HuggingFaceEndpointEmbeddings(model=config.EMBEDDINGS_SERVER)

@@ -5,11 +5,14 @@ from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from app.core import config
 from app.models import Tag
 
+
+TAG_PATTERN = r'#\w+'
+
 embeddings = HuggingFaceEndpointEmbeddings(model=config.EMBEDDINGS_SERVER)
 
 
 def parse_tags(description):
-    tags = re.findall(r'#\w+', description)
+    tags = re.findall(TAG_PATTERN, description)
     return [tag.lower()[1:] for tag in tags]
 
 
@@ -28,3 +31,8 @@ async def check_and_add_tags(session, tag_list):
 
 async def convert_text_to_embeddings(text):
     return embeddings.embed_query(text)
+
+
+def remove_tags(description):
+    cleaned_description = re.sub(TAG_PATTERN, '', description)
+    return cleaned_description.strip()

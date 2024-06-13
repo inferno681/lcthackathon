@@ -112,6 +112,7 @@ async def search_video(
 
 @ router.post("/upload-image/")
 async def upload_image(file: UploadFile = File(...)):
+    print(file.filename)
     try:
         file_location = os.path.join(UPLOAD_DIRECTORY, file.filename)
         with open(file_location, "wb") as f:

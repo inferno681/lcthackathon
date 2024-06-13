@@ -1,14 +1,10 @@
 import re
+import aiohttp
 
-from langchain_huggingface import HuggingFaceEndpointEmbeddings
-
-from app.core import config
 from app.models import Tag
 
 
 TAG_PATTERN = r'#\w+'
-
-embeddings = HuggingFaceEndpointEmbeddings(model=config.EMBEDDINGS_SERVER)
 
 
 def parse_tags(description):
@@ -29,8 +25,18 @@ async def check_and_add_tags(session, tag_list):
     return existing_tags
 
 
-async def convert_text_to_embeddings(text):
-    return embeddings.embed_query(text)
+async def convert_text_to_embeddings(texts):
+    async with aiohttp.ClientSession() as session:
+        texts = [text.replace("\n", " ") for text in texts]
+        response = await session.post(
+            url='http://localhost:8082',
+            json={
+                "inputs": texts,
+                "task": "feature-extraction",
+                "parameters": {}
+            },
+        )
+    return (await response.json())[0]
 
 
 def remove_tags(description):

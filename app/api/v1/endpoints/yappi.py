@@ -7,14 +7,13 @@ from sqlalchemy.orm import selectinload
 from arq import create_pool
 from arq.connections import RedisSettings
 from app.core import (
-    check_and_add_tags,
+    convert_text_to_embeddings,
     get_async_session,
     parse_tags,
     remove_tags
 )
 from app.models import Tag, Yappi
 from app.schemas import YappiBase
-from app.ml import convert_text_to_embeddings, add_video as add
 
 REDIS_SETTINGS = RedisSettings()
 router = APIRouter()
@@ -22,32 +21,6 @@ router = APIRouter()
 UPLOAD_DIRECTORY = "./media"
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
-
-
-@router.post(
-    '/add',
-    response_model=YappiBase
-)
-async def add_video(
-    data: YappiBase,
-    session: AsyncSession = Depends(get_async_session),
-):
-    new_video = Yappi(**data.model_dump())
-    db_obj = await session.execute(select(Yappi).where(
-        Yappi.link == new_video.link))
-    instance = db_obj.scalars().one_or_none()
-    if instance:
-        return instance
-    else:
-        res = await add(new_video.link)
-        tags = await check_and_add_tags(
-            session, parse_tags(new_video.tags_description))
-        new_video.__dict__.update(res)
-        new_video.tags = tags
-        session.add(new_video)
-        await session.commit()
-        await session.refresh(new_video)
-        return new_video
 
 
 @router.post(

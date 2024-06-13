@@ -128,7 +128,9 @@ async def image_recognition(image_path):
         model='llava-llama3-int4',
         prompt='What is this a picture of shortly? Аnswer me briefly 1 main item.',
         images=[image_path],
-        options=options)
+        options=options,
+        keep_alive=-1
+    )
     return res['response']
 
 # Функция перевода с английского на русский

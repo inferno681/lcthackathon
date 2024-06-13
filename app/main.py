@@ -1,6 +1,7 @@
 import time
 import uvicorn
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import api_router
 from app.core import config
@@ -13,6 +14,14 @@ app = FastAPI(
     title=config.APP_TITLE,
     description=config.APP_DESCRIPTION,
     openapi_tags=tags_metadata,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Разрешить запросы с любых источников
+    allow_credentials=True,
+    allow_methods=["*"],  # Разрешить все методы запросов
+    allow_headers=["*"],
 )
 
 

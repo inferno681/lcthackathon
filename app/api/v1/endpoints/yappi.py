@@ -1,4 +1,3 @@
-import json
 import os
 
 from fastapi import APIRouter, Depends, File, UploadFile
@@ -42,12 +41,12 @@ async def add_video_arq(
         redis = await create_pool(REDIS_SETTINGS)
         await redis.enqueue_job(
             'add_video_task',
-            json.dumps(new_video.__dict__)
+            data.__dict__
         )
         return new_video
 
 
-@router.get(
+@ router.get(
     '/search_tags',
     response_model=list[YappiBase]
 )
@@ -95,7 +94,7 @@ async def search_tags(
     return [YappiBase.model_validate(video) for video in videos]
 
 
-@router.get(
+@ router.get(
     '/search',
     response_model=list[YappiBase]
 )
@@ -111,7 +110,7 @@ async def search_video(
     return [YappiBase.model_validate(video) for video in result]
 
 
-@router.post("/upload-image/")
+@ router.post("/upload-image/")
 async def upload_image(file: UploadFile = File(...)):
     try:
         file_location = os.path.join(UPLOAD_DIRECTORY, file.filename)

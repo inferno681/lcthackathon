@@ -7,7 +7,7 @@ from ollama import AsyncClient
 from ollama._types import Options
 
 
-from .services import config, convert_text_to_embeddings
+from services import config, convert_text_to_embeddings
 PATH_TO_FILES = './temp/'
 
 
@@ -55,10 +55,10 @@ async def add_video(link):
     os.remove(audio_file)
 
     text_from_video = await image_recignition(face)
+    print(text_from_video)
     t_text = f'{text_from_audio} {text_from_video}'.strip()
     if not t_text:
         t_text = "No sound"
-    embedding = []
     embedding = await convert_text_to_embeddings(t_text)
     res = {
         'voise_description': text_from_audio,

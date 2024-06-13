@@ -14,7 +14,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
 
-from .db import Base
+from db import Base
 
 
 yappi_tag_association = Table(

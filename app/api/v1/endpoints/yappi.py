@@ -1,3 +1,4 @@
+import json
 import os
 
 from fastapi import APIRouter, Depends, File, UploadFile
@@ -39,7 +40,10 @@ async def add_video_arq(
         return instance
     else:
         redis = await create_pool(REDIS_SETTINGS)
-        await redis.enqueue_job('add_video_task', new_video)
+        await redis.enqueue_job(
+            'add_video_task',
+            json.dumps(new_video.__dict__)
+        )
         return new_video
 
 

@@ -39,7 +39,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         password: ${{ secrets.SSH_PASSPHRASE }}
-        source: "infra/docker-compose-prod.yaml"
+        source: "infra/docker-compose-api-prod.yaml"
         target: ${{ secrets.PROJECT_NAME }}
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master

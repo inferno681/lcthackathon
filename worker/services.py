@@ -1,4 +1,5 @@
 import re
+import os
 import aiohttp
 import aiofiles
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
@@ -38,7 +39,8 @@ async def send_file_to_fastapi(file_path, url):
         try:
             async with aiofiles.open(file_path, 'rb') as file:
                 form_data = aiohttp.FormData()
-                form_data.add_field('file', file, filename=file_path)
+                filename = os.path.basename(file_path)
+                form_data.add_field('file', file, filename=filename)
                 async with session.post(url, data=form_data) as response:
                     if response.status == 200:
                         print("Файл успешно отправлен!")

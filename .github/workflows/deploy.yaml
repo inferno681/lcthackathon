@@ -51,6 +51,6 @@ jobs:
           cd ${{ secrets.PROJECT_NAME }}
           mv ./infra/docker-compose-api-prod.yaml .
           sudo docker compose -f docker-compose-api-prod.yaml pull
-          sudo docker compose -f docker-compose-api-prod down
-          sudo docker compose -f docker-compose-api-prod up -d
-          sudo docker compose -f docker-compose-api-prod exec alembic upgrade head
+          sudo docker compose -f docker-compose-api-prod.yaml down
+          sudo docker compose -f docker-compose-api-prod.yaml up -d
+          sudo docker compose -f docker-compose-api-prod.yaml exec alembic upgrade head

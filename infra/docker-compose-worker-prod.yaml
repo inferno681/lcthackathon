@@ -1,0 +1,38 @@
+services:
+  text_embeddings_inference:
+    image: ghcr.io/huggingface/text-embeddings-inference:turing-1.2
+    container_name: embeddings
+    restart: always
+    ports:
+      - "8082:80"
+    volumes:
+      - ./data:/data
+    environment:
+      - MODEL_ID=intfloat/multilingual-e5-small
+  redis:
+    container_name: redis
+    restart: always
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      - ./data:/root/.ollama
+    ports:
+      - "8083:11434"
+    restart: always
+
+volumes:
+  db_value:
+  redis_data:

@@ -38,7 +38,6 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         source: "infra/docker-compose-prod.yaml"
         target: ${{ secrets.PROJECT_NAME }}
@@ -47,11 +46,11 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
           cd ${{ secrets.PROJECT_NAME }}
-          mv ./infra/docker-compose-prod.yaml .
-          sudo docker compose -f docker-compose-prod.yaml pull
-          sudo docker compose -f docker-compose-prod.yaml down
-          sudo docker compose -f docker-compose-prod.yaml up -d
+          mv ./infra/docker-compose-api-prod.yaml .
+          sudo docker compose -f docker-compose-api-prod.yaml pull
+          sudo docker compose -f docker-compose-api-prod down
+          sudo docker compose -f docker-compose-api-prod up -d
+          sudo docker compose -f docker-compose-api-prod exec alembic upgrade head

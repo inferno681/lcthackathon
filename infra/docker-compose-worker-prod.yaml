@@ -43,7 +43,7 @@ services:
       - WHISPER_MODEL=Systran/faster-whisper-base
     restart: always
   backend:
-    image: inferno681/lcthackathon:latest
+    image: inferno681/lcthackathonworker:latest
     restart: always
     env_file:
       - .env

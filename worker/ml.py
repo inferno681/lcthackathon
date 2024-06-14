@@ -4,6 +4,10 @@ from ffmpeg.asyncio import FFmpeg
 from uuid import uuid4
 from ollama import AsyncClient
 from ollama._types import Options
+import requests
+from uuid import uuid4
+import random
+import re
 
 
 from services import config, convert_text_to_embeddings
@@ -29,7 +33,7 @@ TRANSLATE_HOST = f'{GPU_HOST}:8084/api/v1/translate'
 
 
 async def add_video(link):
-    # парсинг видеофайла, выделение аудодорожки и первого кадра
+    # парсинг видеофайла, выделение аудиодорожки и первого кадра
     audio_file, face = await parse_video(link)
 
     # Транскрибция аудио

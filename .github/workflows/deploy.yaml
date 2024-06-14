@@ -53,4 +53,4 @@ jobs:
           sudo docker compose -f docker-compose-api-prod.yaml pull
           sudo docker compose -f docker-compose-api-prod.yaml down
           sudo docker compose -f docker-compose-api-prod.yaml up -d
-          sudo docker compose -f docker-compose-api-prod.yaml exec alembic upgrade head
+          sudo docker compose -f docker-compose-api-prod.yaml exec backend alembic upgrade head

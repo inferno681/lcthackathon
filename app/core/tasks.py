@@ -14,13 +14,14 @@ async def add_video_task(ctx, obj):
     async for session in get_async_session():
         try:
             tags = await check_and_add_tags(
-                session, parse_tags(obj.tags_description))
+                session, parse_tags(obj.tags_description)
+            )
             obj.tags = tags
             session.add(obj)
             await session.commit()
         except Exception as e:
             return e
-    return 'imported'
+    return "imported"
 
 
 class WorkerSettings:

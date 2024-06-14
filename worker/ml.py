@@ -28,42 +28,41 @@ options = Options(temperature=0.1, max_tokens=120)
 TRANSLATE_HOST = f'{GPU_HOST}:8084/api/v1/translate'
 
 
-
 async def add_video(link):
     # парсинг видеофайла, выделение аудодорожки и первого кадра
     audio_file, face = await parse_video(link)
-    
+
     # Транскрибция аудио
     text_from_audio = audio_transcribe(audio_file)
     os.remove(audio_file)
-    
+
     # Формируем описание видео по первому кадру
     text_from_video = await image_recognition(face)
 
     # Переводим на русский язык, т.к. модель распознавания видео возвращает ответ на английском языке
     text_from_video = translate(text_from_video).strip('"')
 
-     # Составление эмбеддингов, каждое предложение отдельный вектор эмбеддингов
+    # Составление эмбеддингов, каждое предложение отдельный вектор эмбеддингов
     text_embed = []
     # Эмбеддинги аудиозаписи по предложениям
     if text_from_audio != '':
         for predl in text_from_audio.split("."):
             if (not str(predl.strip()).isdigit()) and (predl.strip() != ''):
                 text_embed.append(await convert_text_to_embeddings(predl[:250]))
-    
+
     # Эмбеддинги описаний видео по предложениям
     if text_from_video != '':
         for predl in text_from_video.split("."):
             if (not str(predl.strip()).isdigit()) and (predl.strip() != ''):
                 text_embed.append(await convert_text_to_embeddings(predl[:250]))
 
-    res={
-         'voise_description':text_from_audio,
-         'image_description':text_from_video,
-         'face': face,
-         'embedding': text_embed, # Массив эмбеддингов каждого предложения
-         }
-    
+    res = {
+        'voise_description': text_from_audio,
+        'image_description': text_from_video,
+        'face': face,
+        'embedding': text_embed,  # Массив эмбеддингов каждого предложения
+    }
+
     # t_text = f'{text_from_audio} {text_from_video}'.strip()
     # if not t_text:
     #     t_text = "No sound"
@@ -76,6 +75,7 @@ async def add_video(link):
     #     'embedding_description': embedding,
     # }
     return res
+
 
 async def parse_video(link):
     out_audio = f'{PATH_TO_FILES}{uuid4()}.wav'
@@ -104,13 +104,13 @@ def audio_transcribe(link):
     audio_file = open(link, 'rb')
     # Устанавливаем параметры расспознавания
     transcript = client.audio.transcriptions.create(
-                            model="Systran/faster-whisper-base",
-                            file=audio_file,
-                            temperature=0.0,
-                            )
+        model="Systran/faster-whisper-base",
+        file=audio_file,
+        temperature=0.0,
+    )
     # Расспознаем аудиодорожку
     translated = transcript.text
-    if len(translated)>4:
+    if len(translated) > 4:
         # Проверка языка расспознанного текста
         # Как правило язык не на русском означает фоновую музыку
         if bool(re.search('[а-яА-Я]', translated[5])):
@@ -123,6 +123,8 @@ def audio_transcribe(link):
     return res
 
 # Функция описания видео по первому кадру
+
+
 async def image_recognition(image_path):
     res = await ollama.generate(
         model='llava-llama3-int4',
@@ -134,11 +136,13 @@ async def image_recognition(image_path):
     return res['response']
 
 # Функция перевода с английского на русский
+
+
 async def translate(input_str):
     response = requests.post(TRANSLATE_HOST,
                              params={'input_str': input_str}
                              )
     if response:
-        return  response.content.decode('utf-8')
+        return response.content.decode('utf-8')
     else:
         return ''

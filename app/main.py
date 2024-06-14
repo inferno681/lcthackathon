@@ -27,6 +27,7 @@ app.add_middleware(
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
+    """Функция добавляет хэдер с временем ответа"""
     start_time = time.time()
     response = await call_next(request)
     process_time = time.time() - start_time

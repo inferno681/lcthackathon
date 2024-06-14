@@ -10,6 +10,7 @@ REDIS_SETTINGS = RedisSettings(host=config.REDIS_HOST, port=config.REDIS_PORT)
 
 
 async def add_video_task(ctx, data):
+    """Задача на обработку видео"""
     obj = Yappi(**data)
     response = await add_video(obj.link)
     obj.__dict__.update(response)
@@ -23,7 +24,7 @@ async def add_video_task(ctx, data):
             await session.commit()
         except Exception as e:
             return e
-        await send_file_to_fastapi(response['face'], 'http://127.0.0.1:8000/api/v1/upload-image/')
+        await send_file_to_fastapi(response['face'], config.SCREENSHOT_UPLOAD_LINK)
     return 'imported'
 
 

@@ -38,7 +38,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        password: ${{ secrets.SSH_PASSPHRASE }}
         source: "infra/docker-compose-prod.yaml"
         target: ${{ secrets.PROJECT_NAME }}
     - name: Executing remote ssh commands to deploy
@@ -46,7 +46,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        password: ${{ secrets.SSH_PASSPHRASE }}
         script: |
           cd ${{ secrets.PROJECT_NAME }}
           mv ./infra/docker-compose-api-prod.yaml .

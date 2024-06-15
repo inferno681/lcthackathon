@@ -10,11 +10,15 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     POOL_TIMEOUT: int
     POOL_SIZE: int
-    EMBEDDINGS_SERVER: str
-    OLLAMA_SERVER: str
+    GPU_HOST: str
     REDIS_HOST: str
     REDIS_PORT: int
     SCREENSHOT_UPLOAD_LINK: str
+    EMBEDDINGS_PORT: int
+    OLLAMA_PORT: int
+    TRANSLATE_PORT: int
+    OPENAI_PORT: int
+    TEMP_PATH: str
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8"
@@ -27,6 +31,22 @@ class Settings(BaseSettings):
             f"{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD.get_secret_value()}"
             f"@{self.DB_HOST}:{self.DB_PORT}/{self.POSTGRES_DB}"
         )
+
+    @property
+    def OLLAMA_URL(self):
+        return (f"{self.GPU_HOST}:{self.OLLAMA_PORT}")
+
+    @property
+    def TRANSLATE_URL(self):
+        return (f"{self.GPU_HOST}:{self.TRANSLATE_PORT}/api/v1/translate")
+
+    @property
+    def OPENAI_URL(self):
+        return (f"{self.GPU_HOST}:{self.OPENAI_PORT}/v1/")
+
+    @property
+    def EMBEDDINGS_URL(self):
+        return (f"{self.GPU_HOST}:{self.EMBEDDINGS_PORT}")
 
 
 config = Settings()

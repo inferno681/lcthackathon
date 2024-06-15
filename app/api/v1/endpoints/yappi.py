@@ -14,7 +14,7 @@ from app.core import (
     remove_tags,
     LIMIT,
 )
-from app.models import Tag, Vector, Yappi
+from app.models import Embedding, Tag, Yappi
 from app.schemas import YappiBase
 
 REDIS_SETTINGS = RedisSettings(host=config.REDIS_HOST, port=config.REDIS_PORT)
@@ -64,17 +64,17 @@ async def search_tags(
             ids = [yappi.id for yappi in result]
             result = await session.execute(
                 select(
-                    Yappi.tags_description,
-                    func.similarity(Yappi.tags_description, term),
+                    Yappi.full_description,
+                    func.similarity(Yappi.full_description, term),
                 )
                 .where(
                     and_(
                         Yappi.id.in_(ids),
-                        Yappi.tags_description.bool_op("%")(term),
+                        Yappi.full_description.bool_op("%")(term),
                     )
                 )
                 .order_by(
-                    func.similarity(Yappi.tags_description, term).desc(),
+                    func.similarity(Yappi.full_description, term).desc(),
                 )
                 .limit(10)
             )
@@ -82,14 +82,14 @@ async def search_tags(
         term = q
         result = await session.execute(
             select(
-                Yappi.tags_description,
-                func.similarity(Yappi.tags_description, term),
+                Yappi.full_description,
+                func.similarity(Yappi.full_description, term),
             )
             .where(
-                Yappi.tags_description.bool_op("%")(term),
+                Yappi.full_description.bool_op("%")(term),
             )
             .order_by(
-                func.similarity(Yappi.tags_description, term).desc(),
+                func.similarity(Yappi.full_description, term).desc(),
             )
             .limit(10)
         )
@@ -106,8 +106,8 @@ async def search_video(
     vector = await convert_text_to_embeddings(q)
     result = await session.scalars(
         select(Yappi)
-        .join(Vector, Vector.yappi_id == Yappi.id)
-        .order_by(func.l2_distance(Vector.vector, vector))
+        .join(Embedding, Embedding.yappi_id == Yappi.id)
+        .order_by(func.l2_distance(Embedding.embedding, vector))
         .limit(5)
     )
 

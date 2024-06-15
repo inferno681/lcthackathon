@@ -54,7 +54,7 @@ class Yappi(Base):
     full_description = Column(Text)
     create_time = Column(TIMESTAMP, default=datetime.now)
     popularity = Column(Integer)
-    vectors = relationship("Vector", back_populates="yappis")
+    embeddings = relationship("Embedding", back_populates="yappis")
     tags = relationship("Tag", secondary=YappiTag, back_populates="yappis")
 
 
@@ -73,15 +73,15 @@ class Tag(Base):
     yappis = relationship("Yappi", secondary=YappiTag, back_populates="tags")
 
 
-class Vector(Base):
+class Embedding(Base):
     """Таблица векторов"""
 
-    __tablename__ = "vector"
+    __tablename__ = "embedding"
     __table_args__ = {"schema": "public"}
 
-    id_seq = Sequence("vector_id_seq", schema="public")
+    id_seq = Sequence("embedding_id_seq", schema="public")
     id = Column(
         BigInteger, primary_key=True, server_default=id_seq.next_value()
     )
-    vector = Column(Vector(VECTOR_LENTH))
-    yappi = relationship("Yappi", back_populates="vectors")
+    embedding = Column(Vector(VECTOR_LENTH))
+    yappi = relationship("Yappi", back_populates="embeddings")

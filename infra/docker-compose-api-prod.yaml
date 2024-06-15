@@ -37,6 +37,14 @@ services:
     depends_on:
       - db
       - redis
+    volumes:
+      - /usr/share/nginx/html/dist/:/usr/share/
+  frontend:
+    image: tisavaco/hackaton-web
+    depends_on:
+      - backend
+    volumes:
+      - /usr/share/nginx/html/:/app/result_build/
 
 volumes:
   db_value:

@@ -21,19 +21,19 @@ async def add_video_task(ctx: dict, data: dict):
     async for session in get_async_session():
         try:
             tags = await check_and_add_tags(
-                session, parse_tags(obj.tags_description))
+                session, parse_tags(obj.tags_description)
+            )
             obj.tags = tags
-            obj.embeddings = response['embedding']
+            obj.embeddings = response["embedding"]
             session.add(obj)
             await session.commit()
         except Exception:
-            raise Retry(defer=ctx['job_try'] * 5)
+            raise Retry(defer=ctx["job_try"] * 5)
         await send_file_to_fastapi(
-            response['face'],
-            config.SCREENSHOT_UPLOAD_LINK
+            response["face"], config.SCREENSHOT_UPLOAD_LINK
         )
-        os.remove(response['face'])
-    return 'imported'
+        os.remove(response["face"])
+    return "imported"
 
 
 class WorkerSettings:

@@ -34,19 +34,19 @@ class Settings(BaseSettings):
 
     @property
     def OLLAMA_URL(self):
-        return (f"{self.GPU_HOST}:{self.OLLAMA_PORT}")
+        return f"{self.GPU_HOST}:{self.OLLAMA_PORT}"
 
     @property
     def TRANSLATE_URL(self):
-        return (f"{self.GPU_HOST}:{self.TRANSLATE_PORT}/api/v1/translate")
+        return f"{self.GPU_HOST}:{self.TRANSLATE_PORT}/api/v1/translate"
 
     @property
     def OPENAI_URL(self):
-        return (f"{self.GPU_HOST}:{self.OPENAI_PORT}/v1/")
+        return f"{self.GPU_HOST}:{self.OPENAI_PORT}/v1/"
 
     @property
     def EMBEDDINGS_URL(self):
-        return (f"{self.GPU_HOST}:{self.EMBEDDINGS_PORT}")
+        return f"{self.GPU_HOST}:{self.EMBEDDINGS_PORT}"
 
 
 config = Settings()

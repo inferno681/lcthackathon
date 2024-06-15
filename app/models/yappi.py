@@ -76,7 +76,7 @@ class Tag(Base):
 class Vector(Base):
     """Таблица векторов"""
 
-    __tablename__ = "Vector"
+    __tablename__ = "vector"
     __table_args__ = {"schema": "public"}
 
     id_seq = Sequence("vector_id_seq", schema="public")

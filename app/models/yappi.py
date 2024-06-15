@@ -5,6 +5,7 @@ from sqlalchemy import (
     BigInteger,
     ForeignKey,
     String,
+    Table,
     Text,
     Integer,
     TIMESTAMP,
@@ -15,24 +16,18 @@ from pgvector.sqlalchemy import Vector
 
 from app.core import Base, VECTOR_LENTH
 
-
-class YappiTag(Base):
-    """Промежуточная таблица для М2М связи"""
-
-    __tablename__ = "yappi_tag"
-    __table_args__ = {"schema": "public"}
-
-    id_seq = Sequence("yappi_tag_id_seq", schema="public")
-
-    id = Column(
-        BigInteger, primary_key=True, server_default=id_seq.next_value()
-    )
-    yappi_id = Column(
-        BigInteger, ForeignKey("public.yappi.id", ondelete="CASCADE")
-    )
-    tag_id = Column(
-        BigInteger, ForeignKey("public.tag.id", ondelete="CASCADE")
-    )
+yappi_tag = Table(
+    "yappi_tag",
+    Base.metadata,
+    Column(
+        "yappi_id",
+        BigInteger,
+        ForeignKey("public.yappi.id", ondelete="CASCADE"),
+    ),
+    Column(
+        "tag_id", BigInteger, ForeignKey("public.tag.id", ondelete="CASCADE")
+    ),
+)
 
 
 class Yappi(Base):
@@ -54,8 +49,8 @@ class Yappi(Base):
     full_description = Column(Text)
     create_time = Column(TIMESTAMP, default=datetime.now)
     popularity = Column(Integer)
-    embeddings = relationship("Embedding", back_populates="yappis")
-    tags = relationship("Tag", secondary=YappiTag, back_populates="yappis")
+    embeddings = relationship("Embedding", back_populates="yappi")
+    tags = relationship("Tag", secondary=yappi_tag, back_populates="yappis")
 
 
 class Tag(Base):
@@ -70,7 +65,7 @@ class Tag(Base):
     )
     name = Column(String, nullable=False, unique=True)
 
-    yappis = relationship("Yappi", secondary=YappiTag, back_populates="tags")
+    yappis = relationship("Yappi", secondary=yappi_tag, back_populates="tags")
 
 
 class Embedding(Base):
@@ -82,6 +77,9 @@ class Embedding(Base):
     id_seq = Sequence("embedding_id_seq", schema="public")
     id = Column(
         BigInteger, primary_key=True, server_default=id_seq.next_value()
+    )
+    yappi_id = Column(
+        BigInteger, ForeignKey("public.yappi.id", ondelete="CASCADE")
     )
     embedding = Column(Vector(VECTOR_LENTH))
     yappi = relationship("Yappi", back_populates="embeddings")

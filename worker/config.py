@@ -16,12 +16,11 @@ class Settings(BaseSettings):
     SCREENSHOT_UPLOAD_LINK: str
     EMBEDDINGS_PORT: int
     OLLAMA_PORT: int
-    TRANSLATE_PORT: int
     OPENAI_PORT: int
     TEMP_PATH: str
 
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8"
+        env_file=".env", env_file_encoding="utf-8", extra="allow"
     )
 
     @property

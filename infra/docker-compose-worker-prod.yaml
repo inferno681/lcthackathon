@@ -9,6 +9,21 @@ services:
       - ./data:/data
     environment:
       - MODEL_ID=intfloat/multilingual-e5-small
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+  redis:
+    container_name: redis
+    restart: always
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
 
   ollama:
     image: ollama/ollama
@@ -42,15 +57,7 @@ services:
     environment:
       - WHISPER_MODEL=Systran/faster-whisper-base
     restart: always
-  backend:
-    image: inferno681/lcthackathonworker:latest
-    restart: always
-    env_file:
-      - .env
-    depends_on:
-      - text_embeddings_inference
-      - ollama
-      - whisper
+
 
 volumes:
   db_value:

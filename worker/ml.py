@@ -1,13 +1,13 @@
 import os
 import re
 
-import requests
-
+import torch
 from ffmpeg.asyncio import FFmpeg
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from ollama import AsyncClient
 from ollama._types import Options
 from openai import OpenAI
+from transformers import MarianMTModel, MarianTokenizer
 from uuid import uuid4
 
 
@@ -28,6 +28,11 @@ ollama = AsyncClient(host=config.OLLAMA_URL)
 
 # Устанавливаем температуру 0.1 для запросов к модели Llava
 options = Options(temperature=0.1, max_tokens=120)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model_name = "Helsinki-NLP/opus-mt-en-ru"
+model = MarianMTModel.from_pretrained(model_name).to(device)
+tokenizer = MarianTokenizer.from_pretrained(model_name)
 
 
 async def video_processing(link: str) -> dict:
@@ -133,9 +138,16 @@ async def image_recognition(image_path: str) -> str:
 
 
 async def translate(input: str) -> str:
-    """Функция перевода с английского на русский"""
-    result = requests.post(config.TRANSLATE_URL, params={"input_str": input})
+    result = []
+    for str in input.split("."):
+        if (not str.strip().isdigit()) and (str.strip() != ""):
+            batch = tokenizer.prepare_seq2seq_batch(
+                [str], return_tensors="pt"
+            ).to(device)
+            translation = model.generate(**batch)
+            out = tokenizer.decode(translation[0], skip_special_tokens=True)
+            result.append(out)
     if result:
-        return result.content.decode("utf-8")
+        return ". ".join(result)
     else:
         return ""

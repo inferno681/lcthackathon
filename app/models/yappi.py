@@ -18,6 +18,7 @@ from app.core import Base, VECTOR_LENTH
 
 class YappiTag(Base):
     """Промежуточная таблица для М2М связи"""
+
     __tablename__ = "yappi_tag"
     __table_args__ = {"schema": "public"}
 
@@ -26,14 +27,17 @@ class YappiTag(Base):
     id = Column(
         BigInteger, primary_key=True, server_default=id_seq.next_value()
     )
-    yappi_id = Column(BigInteger, ForeignKey(
-        "public.yappi.id", ondelete="CASCADE"))
-    tag_id = Column(BigInteger, ForeignKey(
-        "public.tag.id", ondelete="CASCADE"))
+    yappi_id = Column(
+        BigInteger, ForeignKey("public.yappi.id", ondelete="CASCADE")
+    )
+    tag_id = Column(
+        BigInteger, ForeignKey("public.tag.id", ondelete="CASCADE")
+    )
 
 
 class Yappi(Base):
     """Таблица с информацией о загруженных видео"""
+
     __tablename__ = "yappi"
     __table_args__ = {"schema": "public"}
 
@@ -44,21 +48,19 @@ class Yappi(Base):
     )
     link = Column(String, nullable=False, unique=True)
     face = Column(String, unique=True)
-    tags_description = Column(String)
+    description = Column(String)
     voise_description = Column(String)
     image_description = Column(String)
     full_description = Column(Text)
-    embedding_description = Column(Vector(VECTOR_LENTH))
     create_time = Column(TIMESTAMP, default=datetime.now)
     popularity = Column(Integer)
-
-    tags = relationship(
-        "Tag", secondary=YappiTag, back_populates="yappis"
-    )
+    vectors = relationship("Vector", back_populates="yappis")
+    tags = relationship("Tag", secondary=YappiTag, back_populates="yappis")
 
 
 class Tag(Base):
     """Таблица с тэгами"""
+
     __tablename__ = "tag"
     __table_args__ = {"schema": "public"}
 
@@ -68,6 +70,18 @@ class Tag(Base):
     )
     name = Column(String, nullable=False, unique=True)
 
-    yappis = relationship(
-        "Yappi", secondary=YappiTag, back_populates="tags"
+    yappis = relationship("Yappi", secondary=YappiTag, back_populates="tags")
+
+
+class Vector(Base):
+    """Таблица векторов"""
+
+    __tablename__ = "Vector"
+    __table_args__ = {"schema": "public"}
+
+    id_seq = Sequence("vector_id_seq", schema="public")
+    id = Column(
+        BigInteger, primary_key=True, server_default=id_seq.next_value()
     )
+    vector = Column(Vector(VECTOR_LENTH))
+    yappi = relationship("Yappi", back_populates="vectors")

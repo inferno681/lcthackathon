@@ -12,9 +12,9 @@ from app.core import (
     get_async_session,
     parse_tags,
     remove_tags,
-    LIMIT
+    LIMIT,
 )
-from app.models import Tag, Yappi
+from app.models import Tag, Vector, Yappi
 from app.schemas import YappiBase
 
 REDIS_SETTINGS = RedisSettings(host=config.REDIS_HOST, port=config.REDIS_PORT)
@@ -106,7 +106,8 @@ async def search_video(
     vector = await convert_text_to_embeddings(q)
     result = await session.scalars(
         select(Yappi)
-        .order_by(Yappi.embedding_description.l2_distance(vector))
+        .join(Vector, Vector.yappi_id == Yappi.id)
+        .order_by(func.l2_distance(Vector.vector, vector))
         .limit(5)
     )
 

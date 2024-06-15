@@ -1,3 +1,4 @@
+from arq import Retry
 from arq.connections import RedisSettings
 from config import config
 from db import get_async_session
@@ -22,8 +23,8 @@ async def add_video_task(ctx, data):
             obj.tags = tags
             session.add(obj)
             await session.commit()
-        except Exception as e:
-            return e
+        except Exception:
+            raise Retry(defer=ctx['job_try'] * 5)
         await send_file_to_fastapi(response['face'], config.SCREENSHOT_UPLOAD_LINK)
     return 'imported'
 

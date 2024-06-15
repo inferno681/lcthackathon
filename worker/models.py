@@ -44,14 +44,14 @@ class Yappi(Base):
     )
     link = Column(String, nullable=False, unique=True)
     face = Column(String, unique=True)
-    tags_description = Column(String)
+    description = Column(String)
     voise_description = Column(String)
     image_description = Column(String)
     full_description = Column(Text)
     embedding_description = Column(Vector(384))
     create_time = Column(TIMESTAMP, default=datetime.now)
     popularity = Column(Integer)
-
+    vectors = relationship("Vector", back_populates="yappis")
     tags = relationship(
         "Tag", secondary=YappiTag, back_populates="yappis"
     )
@@ -71,3 +71,16 @@ class Tag(Base):
     yappis = relationship(
         "Yappi", secondary=YappiTag, back_populates="tags"
     )
+
+
+class Vectors(Base):
+    """Таблица векторов"""
+    __tablename__ = "Vector"
+    __table_args__ = {"schema": "public"}
+
+    id_seq = Sequence("vector_id_seq", schema="public")
+    id = Column(
+        BigInteger, primary_key=True, server_default=id_seq.next_value()
+    )
+    vector = Column(Vector(384))
+    yappi = relationship("Yappi", back_populates="vectors")

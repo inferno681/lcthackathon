@@ -10,5 +10,5 @@ if [ ! -f ./data/OLLAMA_MODELFILE_INT4 ]; then
     sudo wget -P ./data https://huggingface.co/xtuner/llava-llama-3-8b-v1_1-gguf/resolve/main/OLLAMA_MODELFILE_INT4
 fi
 
-sudo docker compose -f docker-compose-api-prod.yaml exec ollama ollama create llava-llama3-int4 -f ./root/.ollama/OLLAMA_MODELFILE_INT4
-sudo docker compose -f docker-compose-api-prod.yaml exec ollama ollama run llava-llama3-int4
+sudo docker compose -f docker-compose-worker-prod.yaml exec ollama ollama create llava-llama3-int4 -f ./root/.ollama/OLLAMA_MODELFILE_INT4
+sudo docker compose -f docker-compose-worker-prod.yaml exec ollama ollama run llava-llama3-int4

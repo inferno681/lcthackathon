@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     POOL_TIMEOUT: int
     POOL_SIZE: int
-    GPU_HOST: str
+    EMBEDDINGS_HOST: str
     WHISPER_HOST: str
     REDIS_HOST: str
     REDIS_PORT: int
@@ -43,7 +43,7 @@ class Settings(BaseSettings):
 
     @property
     def EMBEDDINGS_URL(self):
-        return f"{self.GPU_HOST}:{self.EMBEDDINGS_PORT}"
+        return f"{self.EMBEDDINGS_HOST}:{self.EMBEDDINGS_PORT}"
 
 
 config = Settings()

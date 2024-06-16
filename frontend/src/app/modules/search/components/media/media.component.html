@@ -1,0 +1,21 @@
+<div class="media-container">
+  <div class="media-content w-50 mb-0">
+    <div class="media-content-container">
+      <video controls class="video-player">
+        <source [src]="content?.link" type="video/mp4">
+      </video>
+      <div class="media-description w-100">
+        <ng-container>
+          <div class="media-tags mb-0">
+            <span>{{content?.tags}}</span>
+          </div>
+        </ng-container> 
+        <ng-container>
+          <div>
+            <span>{{content?.descr_voce}}</span>
+          </div>
+        </ng-container> 
+      </div>
+    </div>
+  </div>
+</div>

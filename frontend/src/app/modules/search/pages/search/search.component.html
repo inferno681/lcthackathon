@@ -1,0 +1,14 @@
+
+<div [class]="{'search-container-media': isContent(), 'search-container': !isContent()}">
+    <ng-container *ngIf="form">
+        <form [formGroup]="form" class="search-form">
+            <input class="search-input" type="text" formControlName="search" placeholder="Поиск...">
+            <button class="btn btn-primary" (click)="search()">Поиск</button>
+        </form>
+    </ng-container>
+</div>
+<div>
+    <div *ngFor="let item of content">
+        <app-media [content]="item"></app-media>
+    </div>
+</div>

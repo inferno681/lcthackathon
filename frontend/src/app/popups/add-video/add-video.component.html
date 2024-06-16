@@ -1,0 +1,39 @@
+<div class="custom-dialog">
+    <div mat-dialog-title>
+        <div class="modal-header p-0 pb-3">
+            <h2 class="tc-grey">Добавить видеоролик</h2>
+        </div>
+    </div>
+    <mat-dialog-content>
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+            <mat-tab label="По ссылке">
+                <ng-container *ngIf="form">
+                    <form [formGroup]="form">
+                        <mat-form-field appearance="outline" class="w-100 mt-1">
+                            <mat-label>Ссылка на видео</mat-label>
+                            <input matInput required formControlName="link">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Описание видео</mat-label>
+                            <textarea matInput formControlName="description"></textarea>
+                          </mat-form-field>
+                    </form>
+                </ng-container>
+            </mat-tab>
+            <!-- <mat-tab label="Файлом">
+                <ng-container>
+                    <div>
+                        <input class="custom-file-input" type="file" (change)="onFileChange($event)" />
+                        <button (click)="uploadFile()">Upload</button>
+                    </div>
+                </ng-container>
+            </mat-tab> -->
+          </mat-tab-group>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <div class="d-flex justify-content-end w-100">
+            <button class="btn btn-secondary btn-width_fixed" type="button" mat-dialog-close>Отменить</button>
+            <button class="btn btn-primary btn-width_fixed" type="button" (click)="add()">Добавить</button>
+        </div>
+    </mat-dialog-actions>
+</div>

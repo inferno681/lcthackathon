@@ -207,3 +207,7 @@ TEMP_PATH = (путь к временным файлам)
 * **Разработчики Backend:**
   + [Василий](https://github.com/inferno681)
   + [Владимир](https://github.com/Vladimir-pro)
+
+* **Разработчик Frontend:**
+  + [Сергей](https://github.com/Tisavaco)
+  + [Ссылка на репозиторий Frontend](https://github.com/Tisavaco/Hackathon.Web)

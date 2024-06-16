@@ -1,0 +1,55 @@
+.mat-form-field.fill-container textarea 
+  height: 100px
+
+.input-form-field
+  background-color: #1b1b1f
+  color: #bababa
+
+.custom-file-input 
+  background-color: #f0f0f0 /* Цвет фона */
+  color: #333 /* Цвет текста */
+  padding: 10px /* Внутренний отступ */
+  border: 1px solid #ccc /* Граница */
+  cursor: pointer /* Изменить курсор при наведении */
+
+
+::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled)
+  background-color: #1b1b1f !important
+
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input
+  color: #bababa !important
+
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-floating-label
+  color: #bababa !important
+
+::ng-deep .mdc-text-field--outlined.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label
+  color: #e30e1c !important
+
+
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing
+  border-color: #bababa !important
+
+::ng-deep .mdc-text-field--outlined.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+::ng-deep .mdc-text-field--outlined.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+::ng-deep .mdc-text-field--outlined.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing
+  border-color: #e30e1c !important
+
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label,
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label,
+::ng-deep .mat-mdc-tab-nav-bar .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label,
+::ng-deep .mat-mdc-tab-nav-bar .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label
+  color: #bababa !important
+
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--inactive .mdc-tab__text-label,
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--inactive .mdc-tab__text-label,
+::ng-deep .mat-mdc-tab-nav-bar .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--inactive .mdc-tab__text-label,
+::ng-deep .mat-mdc-tab-nav-bar .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--inactive .mdc-tab__text-label
+  color: #bababa !important
+
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline,
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab-link:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline,
+::ng-deep .mat-mdc-tab-nav-bar .mat-mdc-tab:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline,
+::ng-deep .mat-mdc-tab-nav-bar .mat-mdc-tab-link:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline
+  border-color: #bababa !important

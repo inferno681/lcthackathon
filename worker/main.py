@@ -21,7 +21,7 @@ async def add_video_task(ctx: dict, data: dict):
     async for session in get_async_session():
         try:
             tags = await check_and_add_tags(
-                session, parse_tags(obj.description)
+                session, parse_tags(obj.tags_description)
             )
             obj.tags = tags
             obj.embeddings = response["embedding"]

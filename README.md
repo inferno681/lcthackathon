@@ -83,6 +83,7 @@ REDIS_HOST = localhost (хост редиса для загрузки задач
 REDIS_PORT = 6379 (порт редиса)
 MEDIA_FOLDER = ./media (папка для сохранения изображений)
   ```
+  ```
 - Из папки **infra** запустите docker-compose-api-prod.yaml:
   ```
   ~$ docker compose -f docker-compose-api-prod.yaml up -d

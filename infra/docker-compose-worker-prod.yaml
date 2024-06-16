@@ -57,7 +57,15 @@ services:
     environment:
       - WHISPER_MODEL=Systran/faster-whisper-base
     restart: always
-
+  backend:
+    image: inferno681/lcthackathonworker:latest
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - text_embeddings_inference
+      - ollama
+      - whisper
 
 volumes:
   db_value:

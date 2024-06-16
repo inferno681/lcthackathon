@@ -24,7 +24,7 @@ services:
     restart: always
     image: redis:latest
     ports:
-      - 6379:6379
+      - "6379:6379"
     volumes:
       - redis_data:/data
   backend:
@@ -39,7 +39,7 @@ services:
       - redis
     volumes:
       - /usr/share/nginx/html/dist/:/usr/share/
-      - ./media/:/app/media/
+      - /usr/share/nginx/html/:/app/media/
   frontend:
     image: tisavaco/hackaton-web
     depends_on:

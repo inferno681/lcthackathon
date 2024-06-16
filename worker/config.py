@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     POOL_TIMEOUT: int
     POOL_SIZE: int
     GPU_HOST: str
+    WHISPER_HOST: str
     REDIS_HOST: str
     REDIS_PORT: int
     SCREENSHOT_UPLOAD_LINK: str
@@ -36,12 +37,8 @@ class Settings(BaseSettings):
         return f"{self.GPU_HOST}:{self.OLLAMA_PORT}"
 
     @property
-    def TRANSLATE_URL(self):
-        return f"{self.GPU_HOST}:{self.TRANSLATE_PORT}/api/v1/translate"
-
-    @property
     def OPENAI_URL(self):
-        return f"{self.GPU_HOST}:{self.OPENAI_PORT}/v1/"
+        return f"{self.WHISPER_HOST}:{self.OPENAI_PORT}/v1/"
 
     @property
     def EMBEDDINGS_URL(self):

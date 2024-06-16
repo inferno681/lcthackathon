@@ -1,40 +1,17 @@
 services:
   text_embeddings_inference:
-    image: ghcr.io/huggingface/text-embeddings-inference:turing-1.2
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.2
     container_name: embeddings
     restart: always
     ports:
       - "8082:80"
     volumes:
-      - ./data:/data
+      - ./dataemb:/data
     environment:
       - MODEL_ID=intfloat/multilingual-e5-small
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-  redis:
-    container_name: redis
-    restart: always
-    image: redis:latest
-    ports:
-      - 6379:6379
-    volumes:
-      - redis_data:/data
-
   ollama:
     image: ollama/ollama
     container_name: ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
     volumes:
       - ./data:/root/.ollama
     ports:
@@ -43,17 +20,10 @@ services:
   whisper:
     image: fedirz/faster-whisper-server:latest-cuda
     container_name: whisper
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
     ports:
       - "8081:8000"
     volumes:
-      - ./data:/root/.cache/huggingface
+      - ./datawhisp:/root/.cache/huggingface
     environment:
       - WHISPER_MODEL=Systran/faster-whisper-base
     restart: always
@@ -62,6 +32,8 @@ services:
     restart: always
     env_file:
       - .env
+    volumes:
+      - ./temp/:/temp/
     depends_on:
       - text_embeddings_inference
       - ollama

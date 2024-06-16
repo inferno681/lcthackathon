@@ -1,7 +1,7 @@
 [![Deploy](https://github.com/inferno681/lcthackathon/actions/workflows/deploy.yaml/badge.svg)](https://github.com/inferno681/lcthackathon/actions/workflows/deploy.yaml)
 <br>
 
-Документация к API доступна по url-адресу [PAY2U/SWAGER](https://lcthackathon.ddns.net/docs)
+Документация к API доступна по url-адресу [SWAGER](https://lcthackathon.ddns.net/docs)
 
 <details><summary><h1>Сервис загрузки и поиска видео</h1></summary>
 

@@ -43,7 +43,7 @@ jobs:
         with:
           context: ./worker/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/lcthackathonworker:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_WORKER }}:latest
 
   deploy:
     runs-on: ubuntu-latest

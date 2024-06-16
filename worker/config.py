@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     REDIS_PORT: int
     SCREENSHOT_UPLOAD_LINK: str
     EMBEDDINGS_PORT: int
+    OLLAMA_HOST: str
     OLLAMA_PORT: int
     OPENAI_PORT: int
     TEMP_PATH: str
@@ -34,7 +35,7 @@ class Settings(BaseSettings):
 
     @property
     def OLLAMA_URL(self):
-        return f"{self.GPU_HOST}:{self.OLLAMA_PORT}"
+        return f"{self.OLLAMA_HOST}:{self.OLLAMA_PORT}"
 
     @property
     def OPENAI_URL(self):

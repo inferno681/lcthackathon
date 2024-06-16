@@ -51,7 +51,7 @@ async def search_tags(
 ):
     """Эндпоинт для поиска видео по тэгам и тексту с применением триграмм"""
     if not q:
-        return None
+        return {"error": "Запрос не может быть пустым"}
     elif "#" in q:
         tags = parse_tags(q)
         filters = [Tag.name.ilike(f"{tag}%") for tag in tags]
@@ -103,14 +103,15 @@ async def search_video(
     session: AsyncSession = Depends(get_async_session),
 ):
     """Эндпоинт для поиска видео векторам"""
+    if not q:
+        return [{"error": "Запрос не может быть пустым"}]
     vector = await convert_text_to_embeddings(q)
     result = await session.scalars(
         select(Yappi)
         .join(Embedding, Embedding.yappi_id == Yappi.id)
-        .order_by(func.l2_distance(Embedding.embedding, vector))
+        .order_by(Embedding.embedding.l2_distance(vector))
         .limit(5)
     )
-
     return [YappiBase.model_validate(video) for video in result]
 
 

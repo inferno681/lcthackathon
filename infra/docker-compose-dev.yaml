@@ -11,7 +11,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=secret_password
   text_embeddings_inference:
-    image: ghcr.io/huggingface/text-embeddings-inference:turing-1.2
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.2
     deploy:
       resources:
         reservations:
@@ -23,20 +23,6 @@ services:
       - ./data:/data
     environment:
       - MODEL_ID=intfloat/multilingual-e5-small
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    volumes:
-      - ./data:/root/.ollama
-    ports:
-      - "8083:11434"
-    restart: unless-stopped
+
 volumes:
   db_value:

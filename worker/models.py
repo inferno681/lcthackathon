@@ -44,7 +44,7 @@ class Yappi(Base):
     )
     link = Column(String, nullable=False, unique=True)
     face = Column(String, unique=True)
-    description = Column(String)
+    tags_description = Column(String)
     voise_description = Column(String)
     image_description = Column(String)
     full_description = Column(Text)

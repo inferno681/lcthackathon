@@ -75,7 +75,7 @@ def upgrade() -> None:
         ),
         sa.Column("link", sa.String(), nullable=False),
         sa.Column("face", sa.String(), nullable=True),
-        sa.Column("description", sa.String(), nullable=True),
+        sa.Column("tags_description", sa.String(), nullable=True),
         sa.Column("voise_description", sa.String(), nullable=True),
         sa.Column("image_description", sa.String(), nullable=True),
         sa.Column("full_description", sa.Text(), nullable=True),

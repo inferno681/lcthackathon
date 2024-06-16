@@ -16,6 +16,7 @@ async def add_video_task(ctx: dict, data: dict):
     """Задача на обработку видео"""
     obj = Yappi(**data)
     response = await video_processing(obj.link)
+    print(response)
     obj.__dict__.update(response)
 
     async for session in get_async_session():

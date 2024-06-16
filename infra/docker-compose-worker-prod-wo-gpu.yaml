@@ -9,13 +9,7 @@ services:
       - ./dataemb:/data
     environment:
       - MODEL_ID=intfloat/multilingual-e5-small
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+
   ollama:
     image: ollama/ollama
     container_name: ollama
@@ -24,13 +18,7 @@ services:
     ports:
       - "8083:11434"
     restart: always
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+
   whisper:
     image: fedirz/faster-whisper-server:latest-cuda
     container_name: whisper
@@ -41,13 +29,7 @@ services:
     environment:
       - WHISPER_MODEL=Systran/faster-whisper-base
     restart: always
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+
   backend:
     image: inferno681/lcthackathonworker:latest
     restart: always
@@ -59,13 +41,7 @@ services:
       - text_embeddings_inference
       - ollama
       - whisper
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+
 
 volumes:
   db_value:

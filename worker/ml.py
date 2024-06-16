@@ -6,7 +6,7 @@ from ffmpeg.asyncio import FFmpeg
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from ollama import AsyncClient
 from ollama._types import Options
-from openai import OpenAI
+from openai import AsyncOpenAI
 from transformers import MarianMTModel, MarianTokenizer
 from uuid import uuid4
 
@@ -18,7 +18,8 @@ if not os.path.exists(TEMP_PATH):
     os.makedirs(TEMP_PATH)
 
 # Объект подключения к серверу транскрибции аудиодорожки
-openai_client = OpenAI(api_key="cant-be-empty", base_url=config.OPENAI_URL)
+openai_client = AsyncOpenAI(api_key="cant-be-empty",
+                            base_url=config.OPENAI_URL)
 
 # Задаем подключение к серверу эмбеддингов
 embeddings = HuggingFaceEndpointEmbeddings(model=config.EMBEDDINGS_URL)
@@ -41,14 +42,14 @@ async def video_processing(link: str) -> dict:
     audio_file, face = await parse_video(link)
 
     # Транскрибция аудио
-    text_from_audio = audio_transcribe(audio_file)
+    text_from_audio = await audio_transcribe(audio_file)
     os.remove(audio_file)
 
     # Формируем описание видео по первому кадру
     text_from_video = await image_recognition(face)
 
     # Переводим на русский язык, т.к. модель распознавания видео возвращает ответ на английском языке
-    text_from_video = translate(text_from_video).strip('"')
+    text_from_video = (await translate(text_from_video)).strip('"')
 
     # Составление эмбеддингов, каждое предложение отдельный вектор эмбеддингов
     text_embed = []
@@ -99,12 +100,12 @@ async def parse_video(link: str):
     return out_audio, out_face
 
 
-def audio_transcribe(link: str) -> str:
+async def audio_transcribe(link: str) -> str:
     """Функция транскрибирования аудиодорожки"""
     # Открываем файл аудиодорожки
     audio_file = open(link, "rb")
     # Устанавливаем параметры расспознавания
-    transcript = openai_client.audio.transcriptions.create(
+    transcript = await openai_client.audio.transcriptions.create(
         model="Systran/faster-whisper-base",
         file=audio_file,
         temperature=0.0,

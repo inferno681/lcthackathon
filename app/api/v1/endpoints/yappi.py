@@ -2,7 +2,7 @@ import os
 
 from arq import create_pool
 from arq.connections import RedisSettings
-from fastapi import APIRouter, Depends, File, UploadFile
+from fastapi import APIRouter, Depends
 from sqlalchemy import select, or_, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -56,54 +56,64 @@ async def search_tags(
         tags = parse_tags(q)
         filters = [Tag.name.ilike(f"{tag}%") for tag in tags]
         query = select(Yappi).join(Yappi.tags).where(or_(*filters))
-        result = (await session.scalars(
-            query.options(selectinload(Yappi.tags)).limit(LIMIT)
-        )).all()
+        result = (
+            await session.scalars(
+                query.options(selectinload(Yappi.tags)).limit(LIMIT)
+            )
+        ).all()
         videos = result[:30]
         term = remove_tags(q)
         if term:
             ids = [yappi.id for yappi in result]
-            result1 = (await session.scalars(
+            result1 = (
+                await session.scalars(
+                    select(Yappi)
+                    .where(
+                        and_(
+                            Yappi.id.in_(ids),
+                            Yappi.full_description.bool_op("%")(term),
+                        )
+                    )
+                    .order_by(
+                        func.similarity(Yappi.full_description, term).desc(),
+                    )
+                    .limit(5)
+                )
+            ).all()
+            vector = await convert_text_to_embeddings(q)
+            result2 = (
+                await session.scalars(
+                    select(Yappi)
+                    .join(Embedding, Embedding.yappi_id == Yappi.id)
+                    .where(Yappi.id.in_(ids))
+                    .order_by(Embedding.embedding.l2_distance(vector))
+                    .limit(10)
+                )
+            ).all()
+    else:
+        term = q
+        result1 = (
+            await session.scalars(
                 select(Yappi)
                 .where(
-                    and_(
-                        Yappi.id.in_(ids),
-                        Yappi.full_description.bool_op("%")(term),
-                    )
+                    Yappi.full_description.bool_op("%")(term),
                 )
                 .order_by(
                     func.similarity(Yappi.full_description, term).desc(),
                 )
-                .limit(5)
-            )).all()
-            vector = await convert_text_to_embeddings(q)
-            result2 = (await session.scalars(
+                .limit(10)
+            )
+        ).all()
+        vector = await convert_text_to_embeddings(q)
+        result2 = (
+            await session.scalars(
                 select(Yappi)
                 .join(Embedding, Embedding.yappi_id == Yappi.id)
-                .where(Yappi.id.in_(ids))
                 .order_by(Embedding.embedding.l2_distance(vector))
                 .limit(10)
             )
-    else:
-        term=q
-        result1=(await session.scalars(
-            select(Yappi)
-            .where(
-                Yappi.full_description.bool_op("%")(term),
-            )
-            .order_by(
-                func.similarity(Yappi.full_description, term).desc(),
-            )
-            .limit(10)
-        )).all()
-        vector=await convert_text_to_embeddings(q)
-        result2=(await session.scalars(
-            select(Yappi)
-            .join(Embedding, Embedding.yappi_id == Yappi.id)
-            .order_by(Embedding.embedding.l2_distance(vector))
-            .limit(10)
-        )).all()
-        videos=result1
+        ).all()
+        videos = result1
         for yappi in result2:
             if len(videos) < 10 and (yappi not in result1):
                 videos.append(yappi)
@@ -111,15 +121,3 @@ async def search_tags(
                 break
 
     return [YappiBase.model_validate(video) for video in videos]
-
-
-@ router.post("/upload-image/")
-    async def upload_image(file: UploadFile=File(...)):
-    """Эндпоинт загрузки изображения после обработки"""
-    try:
-    file_location=os.path.join(UPLOAD_DIRECTORY, file.filename)
-        with open(file_location, "wb") as f:
-    f.write(file.file.read())
-        return {"result": "Uploaded"}
-    except Exception as e:
-    return {"error": str(e)}

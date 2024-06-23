@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-
 from arq import Retry
 from arq.connections import RedisSettings
 from config import config
@@ -18,7 +16,9 @@ async def add_video_task(ctx: dict, data: dict):
     """Задача на обработку видео"""
     obj = Yappi(**data)
     async for session in get_async_session():
-        existing_yappi = await session.execute(select(Yappi).filter_by(link=obj.link))
+        existing_yappi = await session.execute(
+            select(Yappi).filter_by(link=obj.link)
+        )
         if existing_yappi.scalars().first():
             return "in database"
     response = await video_processing(obj.link)

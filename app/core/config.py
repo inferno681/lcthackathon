@@ -15,7 +15,6 @@ class Settings(BaseSettings):
     EMBEDDINGS_SERVER: str
     REDIS_HOST: str
     REDIS_PORT: int
-    MEDIA_FOLDER: str
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="allow"

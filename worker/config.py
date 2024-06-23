@@ -14,7 +14,6 @@ class Settings(BaseSettings):
     WHISPER_HOST: str
     REDIS_HOST: str
     REDIS_PORT: int
-    SCREENSHOT_UPLOAD_LINK: str
     EMBEDDINGS_PORT: int
     OLLAMA_HOST: str
     OLLAMA_PORT: int

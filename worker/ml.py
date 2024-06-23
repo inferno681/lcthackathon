@@ -18,8 +18,9 @@ if not os.path.exists(TEMP_PATH):
     os.makedirs(TEMP_PATH)
 
 # Объект подключения к серверу транскрибции аудиодорожки
-openai_client = AsyncOpenAI(api_key="cant-be-empty",
-                            base_url=config.OPENAI_URL)
+openai_client = AsyncOpenAI(
+    api_key="cant-be-empty", base_url=config.OPENAI_URL
+)
 
 # Задаем подключение к серверу эмбеддингов
 embeddings = HuggingFaceEndpointEmbeddings(model=config.EMBEDDINGS_URL)
@@ -50,7 +51,7 @@ async def video_processing(link: str) -> dict:
 
     # Переводим на русский язык, т.к. модель распознавания видео возвращает ответ на английском языке
     text_from_video = (await translate(text_from_video)).strip('"')
-    full_description = text_from_video + ' ' + text_from_audio
+    full_description = text_from_video + " " + text_from_audio
 
     # Составление эмбеддингов, каждое предложение отдельный вектор эмбеддингов
     text_embed = []

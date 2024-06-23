@@ -42,5 +42,6 @@ async def main():
 
     print(f"Время выполнения: {time.time() - start} секунд")
 
+
 if __name__ == "__main__":
     asyncio.run(main())

@@ -1,6 +1,5 @@
 import time
 import csv
-import requests
 
 
 def send_data_to_fastapi(session, data):
@@ -21,7 +20,7 @@ def main():
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
             if n == 70:
-                raise ValueError('stop')
+                raise ValueError("stop")
             send_data_to_fastapi(row)
             n += 1
             time.sleep(0.1)

@@ -1,27 +1,24 @@
-from datetime import datetime, timedelta
-
-from arq import Retry
-from arq.connections import RedisSettings
+import time
+import asyncio
 from config import config
 from db import get_async_session
 from ml import video_processing
 from models import Embedding, Yappi
 from services import check_and_add_tags, parse_tags
-from sqlalchemy.future import select
+import csv
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import select
 
 
-REDIS_SETTINGS = RedisSettings(host=config.REDIS_HOST, port=config.REDIS_PORT)
-
-
-async def add_video_task(ctx: dict, data: dict):
+async def add_video_task(data: dict):
     """Задача на обработку видео"""
     obj = Yappi(**data)
     async for session in get_async_session():
         existing_yappi = await session.execute(select(Yappi).filter_by(link=obj.link))
         if existing_yappi.scalars().first():
-            return "in database"
+            return print("in base")
     response = await video_processing(obj.link)
+    print(response)
     obj.__dict__.update(response)
 
     async for session in get_async_session():
@@ -29,24 +26,28 @@ async def add_video_task(ctx: dict, data: dict):
             tags = await check_and_add_tags(
                 session, parse_tags(obj.tags_description)
             )
-            if tags:
-                obj.tags = tags
-            embeddings = response.get("embedding")
-            if embeddings:
-                for emb_value in embeddings:
-                    embedding = Embedding(embedding=emb_value, yappi=obj)
-                    session.add(embedding)
+            obj.tags = tags
+            embeddings = response["embedding"]
+            for emb_value in embeddings:
+                embedding = Embedding(embedding=emb_value, yappi=obj)
+                session.add(embedding)
             session.add(obj)
             await session.commit()
         except IntegrityError:
             return print("in base")
         except Exception as e:
             print(e)
-            raise Retry(defer=ctx["job_try"] * 5)
+            raise print(e)
     return "imported"
 
 
-class WorkerSettings:
-    functions = [add_video_task]
-    redis_settings = REDIS_SETTINGS
-    max_jobs = config.MAX_JOBS
+async def main():
+    csv_file_path = "/file/yappy_hackaton_2024_400k.csv"
+    with open(csv_file_path, "r", encoding="utf-8") as file:
+        csv_reader = csv.DictReader(file)
+        for row in csv_reader:
+            await add_video_task(row)
+            time.sleep(5)
+
+if __name__ == "__main__":
+    asyncio.run(main())

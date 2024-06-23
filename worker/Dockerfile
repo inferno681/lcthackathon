@@ -12,4 +12,4 @@ RUN pip install -r requirements_docker.txt --no-cache-dir
 
 COPY . .
 
-CMD ["arq", "main.WorkerSettings"]
+CMD ["python", "run.py"]

@@ -13,15 +13,19 @@ def send_data_to_fastapi(session, data):
 
 
 def main():
+    n = 0
     start = time.time()
     csv_file_path = "yappy_hackaton_2024_400k.csv"
 
-    with requests.Session() as session:
-        with open(csv_file_path, "r", encoding="utf-8") as file:
-            csv_reader = csv.DictReader(file)
-            for row in csv_reader:
-                send_data_to_fastapi(session, row)
-                time.sleep(0.1)
+    with open(csv_file_path, "r", encoding="utf-8") as file:
+        csv_reader = csv.DictReader(file)
+        for row in csv_reader:
+            if n == 70:
+                raise ValueError('stop')
+            send_data_to_fastapi(row)
+            n += 1
+            time.sleep(0.1)
+
     print(time.time() - start)
 
 

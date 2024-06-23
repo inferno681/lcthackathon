@@ -22,15 +22,7 @@ services:
     volumes:
       - ./data:/data
     environment:
-      - MODEL_ID=intfloat/multilingual-e5-small
-  redis:
-    container_name: redis
-    restart: always
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
+      - MODEL_ID=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 
 volumes:
   db_value:

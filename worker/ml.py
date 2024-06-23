@@ -28,7 +28,7 @@ embeddings = HuggingFaceEndpointEmbeddings(model=config.EMBEDDINGS_URL)
 ollama = AsyncClient(host=config.OLLAMA_URL)
 
 # Устанавливаем температуру 0.1 для запросов к модели Llava
-options = Options(temperature=0.1, max_tokens=120)
+options = Options(temperature=0.1)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model_name = "Helsinki-NLP/opus-mt-en-ru"

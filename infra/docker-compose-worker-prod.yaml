@@ -1,6 +1,6 @@
 services:
   text_embeddings_inference:
-    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.2
+    image: ghcr.io/huggingface/text-embeddings-inference:turing-1.2
     container_name: embeddings
     restart: always
     ports:
@@ -8,7 +8,7 @@ services:
     volumes:
       - ./dataemb:/data
     environment:
-      - MODEL_ID=intfloat/multilingual-e5-small
+      - MODEL_ID=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
     deploy:
       resources:
         reservations:
@@ -49,7 +49,7 @@ services:
               count: all
               capabilities: [gpu]
   backend:
-    image: inferno681/lcthackathonworker:latest
+    image: inferno681/lcthackathon1:latest
     restart: always
     env_file:
       - .env

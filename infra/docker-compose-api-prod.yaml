@@ -18,7 +18,7 @@ services:
     volumes:
       - ./data:/data
     environment:
-      - MODEL_ID=intfloat/multilingual-e5-small
+      - MODEL_ID=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
   redis:
     container_name: redis
     restart: always
@@ -28,7 +28,7 @@ services:
     volumes:
       - redis_data:/data
   backend:
-    image: inferno681/lcthackathon:latest
+    image: inferno681/lcthackathonapi:latest
     restart: always
     ports:
       - "8000:8000"

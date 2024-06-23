@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     OLLAMA_PORT: int
     OPENAI_PORT: int
     TEMP_PATH: str
+    MAX_JOBS: int
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="allow"

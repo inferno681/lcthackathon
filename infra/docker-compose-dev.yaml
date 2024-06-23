@@ -22,7 +22,7 @@ services:
     volumes:
       - ./data:/data
     environment:
-      - MODEL_ID=intfloat/multilingual-e5-small
+      - MODEL_ID=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 
 volumes:
   db_value:

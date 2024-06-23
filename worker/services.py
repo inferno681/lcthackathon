@@ -1,7 +1,5 @@
 import re
-import os
-import aiohttp
-import aiofiles
+
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from sqlalchemy import select
 
@@ -31,21 +29,3 @@ async def check_and_add_tags(session, tag_list: list) -> list:
 
 async def convert_text_to_embeddings(text: str) -> list:
     return await embeddings.aembed_query(text)
-
-
-async def send_file_to_fastapi(file_path: str, url: str):
-    async with aiohttp.ClientSession() as session:
-        try:
-            async with aiofiles.open(file_path, "rb") as file:
-                form_data = aiohttp.FormData()
-                filename = os.path.basename(file_path)
-                form_data.add_field("file", file, filename=filename)
-                async with session.post(url, data=form_data) as response:
-                    if response.status == 200:
-                        print("Файл успешно отправлен!")
-                    else:
-                        print(f"Ошибка {response.status} при отправке файла.")
-        except FileNotFoundError:
-            print(f"Файл {file_path} не найден.")
-        except aiohttp.ClientError as e:
-            print(f"Ошибка при выполнении HTTP запроса: {e}")

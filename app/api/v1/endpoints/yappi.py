@@ -44,12 +44,12 @@ async def add_video_arq(
         return new_video
 
 
-@router.get("/search_tags", response_model=list[YappiBase])
+@router.get("/search", response_model=list[YappiBase])
 async def search_tags(
     q: str = "",
     session: AsyncSession = Depends(get_async_session),
 ):
-    """Эндпоинт для поиска видео по тэгам и тексту с применением триграмм"""
+    """Эндпоинт для поиска видео по тэгам и тексту с применением триграмм и векторов"""
     if not q:
         return {"error": "Запрос не может быть пустым"}
     elif "#" in q:
@@ -62,7 +62,7 @@ async def search_tags(
         term = remove_tags(q)
         if term:
             ids = [yappi.id for yappi in result]
-            result = await session.execute(
+            result1 = await session.execute(
                 select(
                     Yappi.full_description,
                     func.similarity(Yappi.full_description, term),
@@ -76,14 +76,20 @@ async def search_tags(
                 .order_by(
                     func.similarity(Yappi.full_description, term).desc(),
                 )
+                .limit(5)
+            )
+            vector = await convert_text_to_embeddings(q)
+            result2 = await session.scalars(
+                select(Yappi)
+                .join(Embedding, Embedding.yappi_id == Yappi.id)
+                .order_by(Embedding.embedding.l2_distance(vector))
                 .limit(10)
             )
     else:
         term = q
-        result = await session.execute(
+        result1 = await session.execute(
             select(
-                Yappi.full_description,
-                func.similarity(Yappi.full_description, term),
+                Yappi
             )
             .where(
                 Yappi.full_description.bool_op("%")(term),
@@ -93,26 +99,18 @@ async def search_tags(
             )
             .limit(10)
         )
-    videos = result.scalars().all()
+        vector = await convert_text_to_embeddings(q)
+        result2 = await session.scalars(
+            select(Yappi)
+            .join(Embedding, Embedding.yappi_id == Yappi.id)
+            .order_by(Embedding.embedding.l2_distance(vector))
+            .limit(10)
+        )
+    result2 = [row[0] if isinstance(
+        row, tuple) else row for row in result2]
+
+    videos = result1.scalars().all() + result2
     return [YappiBase.model_validate(video) for video in videos]
-
-
-@router.get("/search", response_model=list[YappiBase])
-async def search_video(
-    q: str = "",
-    session: AsyncSession = Depends(get_async_session),
-):
-    """Эндпоинт для поиска видео векторам"""
-    if not q:
-        return [{"error": "Запрос не может быть пустым"}]
-    vector = await convert_text_to_embeddings(q)
-    result = await session.scalars(
-        select(Yappi)
-        .join(Embedding, Embedding.yappi_id == Yappi.id)
-        .order_by(Embedding.embedding.l2_distance(vector))
-        .limit(5)
-    )
-    return [YappiBase.model_validate(video) for video in result]
 
 
 @router.post("/upload-image/")

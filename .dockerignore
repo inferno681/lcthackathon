@@ -5,3 +5,9 @@ venv/
 worker/
 temp/
 dataset/
+temp/
+data/
+.github/
+infra/
+frontend/
+media/

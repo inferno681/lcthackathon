@@ -4,7 +4,7 @@ import requests
 
 
 def send_data_to_fastapi(session, data):
-    url = "http://127.0.0.1:8000/api/v1/add_queue"
+    url = "http://lcthackathon.ddns.net/:8000/api/v1/add_queue"
     response = session.post(url, json=data)
     if response.status_code == 200:
         print("Данные успешно отправлены!")
@@ -14,7 +14,7 @@ def send_data_to_fastapi(session, data):
 
 def main():
     start = time.time()
-    csv_file_path = "yappy_hackaton_2024_400k1.csv"
+    csv_file_path = "yappy_hackaton_2024_400k.csv"
 
     with requests.Session() as session:
         with open(csv_file_path, "r", encoding="utf-8") as file:

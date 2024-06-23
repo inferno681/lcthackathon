@@ -50,6 +50,7 @@ async def video_processing(link: str) -> dict:
 
     # Переводим на русский язык, т.к. модель распознавания видео возвращает ответ на английском языке
     text_from_video = (await translate(text_from_video)).strip('"')
+    full_description = text_from_video + ' ' + text_from_audio
 
     # Составление эмбеддингов, каждое предложение отдельный вектор эмбеддингов
     text_embed = []
@@ -72,9 +73,11 @@ async def video_processing(link: str) -> dict:
                 text_embed.append(
                     await convert_text_to_embeddings(sentence[:250])
                 )
+    os.remove(face)
     return {
         "voise_description": text_from_audio,
         "image_description": text_from_video,
+        "full_description": full_description,
         "face": face,
         "embedding": text_embed,  # Массив эмбеддингов каждого предложения
     }
